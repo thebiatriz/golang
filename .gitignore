@@ -1,0 +1,6 @@
+# Ignore all Windows executable files
+*.exe
+
+# Ignore compiled binaries without extensions and Go build artifacts
+/bin
+/vendor
