@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"start.com/inicial/calculadora"
+	"start.com/inicial/calculos"
 )
 
 //toda funcao de pacote externo vai ser com a primeira letra maiuscula
@@ -29,15 +29,15 @@ func main() {
 
 	switch opcao {
 	case 1:
-		resultado = calculadora.Somar(numero1, numero2)
+		resultado = calculos.Somar(numero1, numero2)
 	case 2:
-		resultado = calculadora.Diminuir(numero1, numero2)
+		resultado = calculos.Diminuir(numero1, numero2)
 	case 3:
-		resultado = calculadora.Multiplicar(numero1, numero2)
+		resultado = calculos.Multiplicar(numero1, numero2)
 	case 4:
 		var erro error
 
-		resultado, erro = calculadora.Dividir(numero1, numero2)
+		resultado, erro = calculos.Dividir(numero1, numero2)
 
 		if erro != nil {
 			fmt.Println("Erro:", erro)
