@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"start.com/calculator/operations"
+	"github.com/thebiatriz/golang/calculator/operations"
 )
 
 func main() {
