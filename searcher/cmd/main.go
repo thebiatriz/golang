@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"time"
-
 	"github.com/thebiatriz/golang/searcher/internal/fetcher"
 	"github.com/thebiatriz/golang/searcher/internal/models"
 	"github.com/thebiatriz/golang/searcher/internal/processor"
@@ -11,7 +10,7 @@ import (
 
 func main() {
 	start := time.Now()
-	priceChannel := make(chan models.PriceDetails)
+	priceChannel := make(chan models.PriceDetails, 4)
 
 	done := make(chan bool)
 

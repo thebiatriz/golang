@@ -2,7 +2,6 @@ package processor
 
 import (
 	"fmt"
-
 	"github.com/thebiatriz/golang/searcher/internal/models"
 )
 

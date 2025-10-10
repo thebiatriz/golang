@@ -4,7 +4,6 @@ import (
 	"math/rand"
 	"sync"
 	"time"
-
 	"github.com/thebiatriz/golang/searcher/internal/models"
 )
 
