@@ -6,10 +6,10 @@ import (
 	"time"
 )
 
-//vai colocar o tipo de dado (float64) no canal
+// vai colocar o tipo de dado (float64) no canal
 func FetchPrices(priceChannel chan<- float64) {
 	var wg sync.WaitGroup
-	wg.Add(3)
+	wg.Add(4)
 
 	go func() {
 		defer wg.Done()
@@ -30,9 +30,15 @@ func FetchPrices(priceChannel chan<- float64) {
 	}()
 
 	go func() {
+		defer wg.Done()
+		FetchAndSendMultiplePrices(priceChannel)
+	}()
+
+	go func() {
 		wg.Wait()
 		close(priceChannel)
 	}()
+
 }
 
 // buscar preços de diferentes sites
@@ -49,4 +55,18 @@ func FetchPriceFromSite2() float64 {
 func FetchPriceFromSite3() float64 {
 	time.Sleep(2 * time.Second) //demora dois segundos
 	return rand.Float64() * 100
+}
+
+func FetchAndSendMultiplePrices(priceChannel chan<- float64) {
+	time.Sleep(6 * time.Second)
+
+	prices := []float64{
+		rand.Float64() * 100,
+		rand.Float64() * 100,
+		rand.Float64() * 100,
+	}
+
+	for _, price := range prices {
+		priceChannel <- price
+	}
 }
