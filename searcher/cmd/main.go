@@ -12,9 +12,12 @@ func main() {
 	start := time.Now()
 	priceChannel := make(chan float64)
 
-	go fetcher.FetchPrices(priceChannel)
+	done := make(chan bool)
 
-	processor.ShowPriceAVG(priceChannel)
+	go fetcher.FetchPrices(priceChannel)
+	go processor.ShowPriceAVG(priceChannel, done)
+
+	<-done // mecanismo de sincronização
 
 	fmt.Printf("\nTempo total: %s", time.Since(start))
 }
