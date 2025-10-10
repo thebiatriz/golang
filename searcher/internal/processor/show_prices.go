@@ -1,16 +1,20 @@
 package processor
 
-import "fmt"
+import (
+	"fmt"
 
-func ShowPriceAVG(priceChannel <-chan float64, done chan<- bool) {
+	"github.com/thebiatriz/golang/searcher/internal/models"
+)
+
+func ShowPriceAVG(priceChannel <-chan models.PriceDetails, done chan<- bool) {
 	var totalPrice float64
 	var countPrices int
 
 	for price := range priceChannel {
-		totalPrice += price
+		totalPrice += price.Value
 		countPrices++
 		avgPrice := totalPrice / float64(countPrices)
-		fmt.Printf("Preço recebido: R$ %.2f | Preço médio até agora: R$ %.2f\n", price, avgPrice)
+		fmt.Printf("[%s] Preço recebido de %s | R$ %.2f | Preço médio até agora: %.2f\n", price.Timestamp.Format("02-01 15:04:05"), price.StoreName, price.Value, avgPrice)
 	}
 
 	done <- true

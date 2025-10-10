@@ -5,12 +5,13 @@ import (
 	"time"
 
 	"github.com/thebiatriz/golang/searcher/internal/fetcher"
+	"github.com/thebiatriz/golang/searcher/internal/models"
 	"github.com/thebiatriz/golang/searcher/internal/processor"
 )
 
 func main() {
 	start := time.Now()
-	priceChannel := make(chan float64)
+	priceChannel := make(chan models.PriceDetails)
 
 	done := make(chan bool)
 

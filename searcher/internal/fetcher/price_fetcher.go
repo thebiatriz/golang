@@ -4,10 +4,12 @@ import (
 	"math/rand"
 	"sync"
 	"time"
+
+	"github.com/thebiatriz/golang/searcher/internal/models"
 )
 
 // vai colocar o tipo de dado (float64) no canal
-func FetchPrices(priceChannel chan<- float64) {
+func FetchPrices(priceChannel chan<- models.PriceDetails) {
 	var wg sync.WaitGroup
 	wg.Add(4)
 
@@ -42,22 +44,34 @@ func FetchPrices(priceChannel chan<- float64) {
 }
 
 // buscar preços de diferentes sites
-func FetchPriceFromSite1() float64 {
+func FetchPriceFromSite1() models.PriceDetails {
 	time.Sleep(1 * time.Second) //demora um segundo
-	return rand.Float64() * 100 // retorna um valor aleatório
+	return models.PriceDetails{
+		StoreName: "Loja Lua",
+		Value:     rand.Float64() * 100,
+		Timestamp: time.Now(),
+	}
 }
 
-func FetchPriceFromSite2() float64 {
+func FetchPriceFromSite2() models.PriceDetails {
 	time.Sleep(3 * time.Second) //demora três segundos
-	return rand.Float64() * 100
+	return models.PriceDetails{
+		StoreName: "Loja Mágica",
+		Value:     rand.Float64() * 100,
+		Timestamp: time.Now(),
+	}
 }
 
-func FetchPriceFromSite3() float64 {
+func FetchPriceFromSite3() models.PriceDetails {
 	time.Sleep(2 * time.Second) //demora dois segundos
-	return rand.Float64() * 100
+	return models.PriceDetails{
+		StoreName: "Loja Chique",
+		Value:     rand.Float64() * 100,
+		Timestamp: time.Now(),
+	}
 }
 
-func FetchAndSendMultiplePrices(priceChannel chan<- float64) {
+func FetchAndSendMultiplePrices(priceChannel chan<- models.PriceDetails) {
 	time.Sleep(6 * time.Second)
 
 	prices := []float64{
@@ -67,6 +81,10 @@ func FetchAndSendMultiplePrices(priceChannel chan<- float64) {
 	}
 
 	for _, price := range prices {
-		priceChannel <- price
+		priceChannel <- models.PriceDetails{
+			StoreName: "Loja Tem-Tudo",
+			Value:     price,
+			Timestamp: time.Now(),
+		}
 	}
 }
