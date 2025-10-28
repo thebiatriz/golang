@@ -8,7 +8,7 @@ import (
 func main() {
 	router := gin.Default()
 
-	router.GET("/check", check.CheckRoute)
+	router.GET("/check", check.CheckMultipleURLs)
 
 	router.Run(":8080")
 }
