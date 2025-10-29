@@ -1,9 +1,13 @@
 package check
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"sync"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/thebiatriz/golang/statuscheck/internal/model"
@@ -55,11 +59,26 @@ func CheckMultipleURLs(c *gin.Context) {
 }
 
 func checkSite(urlToCheck string) (string, error) {
-	resp, err := http.Head(urlToCheck)
+	_, err := url.ParseRequestURI(urlToCheck)
 
 	if err != nil {
+		return "ERROR", fmt.Errorf("URL inválida: %w", err)
+	}
+
+	client := http.Client{
+		Timeout: time.Second * 10,
+	}
+
+	resp, err := client.Head(urlToCheck)
+
+	if err != nil {
+		if errors.Is(err, context.DeadlineExceeded) {
+			return "ERROR", fmt.Errorf("tempo de resposta excedido: %w", err)
+		}
 		return "ERROR", fmt.Errorf("falha ao conectar: %w", err)
 	}
+
+	defer resp.Body.Close()
 
 	if resp.StatusCode >= 200 && resp.StatusCode <= 299 {
 		return "UP", nil
