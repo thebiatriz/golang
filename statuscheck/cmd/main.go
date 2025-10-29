@@ -9,6 +9,7 @@ func main() {
 	router := gin.Default()
 
 	router.GET("/check", check.CheckMultipleURLs)
+	router.GET("/url-methods", check.AllowMethodsToURL)
 
 	router.Run(":8080")
 }
