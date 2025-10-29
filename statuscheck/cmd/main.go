@@ -1,0 +1,15 @@
+package main
+
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/thebiatriz/golang/statuscheck/internal/check"
+)
+
+func main() {
+	router := gin.Default()
+
+	router.GET("/check", check.CheckMultipleURLs)
+	router.GET("/url-methods", check.AllowMethodsToURLs)
+
+	router.Run(":8080")
+}
