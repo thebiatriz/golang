@@ -7,35 +7,58 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/thebiatriz/golang/statuscheck/internal/model"
 )
 
-func AllowMethodsToURL(c *gin.Context) {
-	url := c.Query("url")
+func AllowMethodsToURLs(c *gin.Context) {
+	var req model.CheckRequest
+	err := c.BindJSON(&req)
 
-	if strings.TrimSpace(url) == "" {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "Url está vazia"})
-		return
-	}
-
-	methods, err := checkURLMethods(url)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-			"message": "Erro ao verificar métodos para a URL",
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": "Erro ao receber o campo das URL's",
 			"details": err.Error(),
 		})
-		return
 	}
 
-	response := model.ResponseMethods{
-		URL:     url,
-		Methods: methods,
+	methodsChannel := make(chan model.ResponseMethods, len(req.URLs))
+	var wg sync.WaitGroup
+	wg.Add(len(req.URLs))
+
+	for _, url := range req.URLs {
+		go func(u string) {
+			defer wg.Done()
+
+			methods, err := checkURLMethods(u)
+
+			finalMethods := methods
+
+			if err != nil {
+				finalMethods = nil
+			}
+
+			methodsChannel <- model.ResponseMethods{
+				URL:     u,
+				Methods: finalMethods,
+			}
+		}(url)
 	}
 
-	c.IndentedJSON(http.StatusOK, response)
+	go func() {
+		wg.Wait()
+		close(methodsChannel)
+	}()
+
+	responseMap := make(map[string]model.ResponseMethods)
+	for result := range methodsChannel {
+		responseMap[result.URL] = result
+	}
+
+	c.IndentedJSON(http.StatusOK, responseMap)
 }
 
 func checkURLMethods(urlToCheck string) ([]string, error) {
